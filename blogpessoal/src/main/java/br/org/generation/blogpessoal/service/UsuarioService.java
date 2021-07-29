@@ -20,8 +20,9 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	public Optional<Usuario> cadastrarUsuario(Usuario usuario) {
-		
+	
+	//////////////// CADASTRAR USUÁRIO //////////////////////////
+	public Usuario cadastrarUsuario(Usuario usuario) {
 		
 		if(usuarioRepository.findByLogin(usuario.getLogin()).isPresent())
 			return null;
@@ -31,10 +32,10 @@ public class UsuarioService {
 		String senhaEncoder = encoder.encode(usuario.getSenha());
 		usuario.setSenha(senhaEncoder);
 
-		return Optional.of(usuarioRepository.save(usuario));
+		return usuarioRepository.save(usuario);
 	}
 
-	
+	///////////////////// ATUALIZAR USUÁRIO ///////////////////////////
 	public Optional<Usuario> atualizarUsuario(Usuario usuario){
 		
 		if(usuarioRepository.findById(usuario.getId()).isPresent()) {
@@ -55,6 +56,7 @@ public class UsuarioService {
 		
 	}
 	
+	//////////////// LOGIN USUÁRIO //////////////////////
 	public Optional<UsuarioLogin> logarUsuario(Optional<UsuarioLogin> usuarioLogin) {
 
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -67,9 +69,10 @@ public class UsuarioService {
 				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII"))); //regra-padrão ASCII
 				String authHeader = "Basic " + new String(encodedAuth); // não esquecer do espaço depois do Basic p gerar o token. sem o espaço não funciona.
 
-				usuarioLogin.get().setToken(authHeader);				
+				usuarioLogin.get().setToken(authHeader);
 				usuarioLogin.get().setNome(usuario.get().getNome());
-				usuarioLogin.get().setSenha(usuario.get().getSenha());
+				usuarioLogin.get().setFoto(usuario.get().getFoto());
+				usuarioLogin.get().setTipo(usuario.get().getTipo());
 				
 				return usuarioLogin;
 

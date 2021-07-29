@@ -14,13 +14,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 	
+	@SuppressWarnings("unused")
 	private @Autowired UserDetailsServiceImpl service;
 
+	
+	
+			 // USUÁRIO TESTE CARREGADO NA MEMÓRIA!
+			// DESABILITAR USUÁRIO APÓS SABER QUE ESTÁ TUDO OK!
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(service);
+		auth.userDetailsService(userDetailsService());
 		
+		auth.inMemoryAuthentication()
+		.withUser("root")
+		.password(passwordEncoder().encode("root"))
+		.authorities("ROLE_USER");
+		// usuário e senha padronizado para evitar fadiga de pesquisar o usuário!
+	
 	}
+		
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
